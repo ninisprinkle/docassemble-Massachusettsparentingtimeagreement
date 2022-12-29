@@ -1,0 +1,492 @@
+---
+include:
+  - docassemble.AssemblyLine:assembly_line.yml
+  - docassemble.ALMassachusetts:al_massachusetts.yml
+  - docassemble.MassAccess:massaccess.yml
+---
+metadata:
+  title: |
+    Parenting Time Agreement
+  short title: |
+    Parenting Time Agreement
+  tags:
+    - FA-00-00-00-00
+  authors:
+    - Nini Sprinkle
+---
+mandatory: True
+comment: |
+  Global interview metadata
+variable name: interview_metadata["Parenting_Time_Agreement_2"]
+data:
+  al_weaver_version: "1.8.0"
+  generated on: "2022-12-19"
+  title: >-
+    Parenting Time Agreement
+  short title: >-
+    Parenting Time Agreement
+  description: |-
+    Massachusetts Parenting Time Agreement
+  allowed courts: 
+    - "Probate and Family Court"
+  categories:
+    - "FA-00-00-00-00"
+  typical role: "plaintiff"
+  generate download screen: True
+---
+code: |
+  interview_metadata['main_interview_key'] =  'Parenting_Time_Agreement_2'
+---
+code: |
+  # This controls the default country and list of states in address field questions
+  AL_DEFAULT_COUNTRY = "US"
+---
+code: |
+  # This controls the default state in address field questions
+  AL_DEFAULT_STATE = "MA"
+---
+code: |
+  github_repo_name =  'docassemble-ParentingTimeAgreement2'
+---
+code: |
+  interview_short_title = "Ask the court to order a parenting-time agreement."
+---
+code: |
+  al_form_type = "starts_case" 
+---
+objects:
+  - users: ALPeopleList.using(there_are_any=True)
+  - children: ALPeopleList.using(there_are_any=True)
+  - parents: ALPeopleList.using(there_are_any=True)
+---
+sections:
+  - review_Parenting_Time_Agreement_2: Review your answers
+---
+#################### Interview order #####################
+comment: |
+  Controls order and branching logic for questions specific to this form
+id: interview_order_Parenting_Time_Agreement_2
+code: |
+  # Set the allowed courts for this interview
+  allowed_courts = interview_metadata["Parenting_Time_Agreement_2"]["allowed courts"]
+  nav.set_section("review_Parenting_Time_Agreement_2")
+  user_role = "plaintiff"
+  user_ask_role = "plaintiff"
+  _date
+  parents_name_sole_custody
+  Children_Birthday_plan_describe
+  set_progress(11)
+  _other_parenting_responsibilities_describe
+  children.gather()
+  parents.gather()
+  set_progress(22)
+  children[0].birthdate
+  if children.target_number > 1:
+    children[1].birthdate
+  if children.target_number > 2:
+     children[2].birthdate
+  if children.target_number > 3:
+    children[3].birthdate
+  if children.target_number > 4:
+    children[4].birthdate
+  if children.target_number > 5:
+     children[5].birthdate
+  set_progress(33)
+  set_progress(44)
+  set_progress(55)
+  docket_number
+  set_progress(66)
+  trial_court.address.address
+  interview_order_Parenting_Time_Agreement_2 = True
+---
+###################### Main order ######################
+comment: |
+  This block includes the logic for standalone interviews.
+  Delete mandatory: True to include in another interview
+mandatory: True
+code: |
+  al_intro_screen
+  Parenting_Time_Agreement_2_intro
+  interview_order_Parenting_Time_Agreement_2
+  signature_date
+  # Store anonymous data for analytics / statistics
+  store_variables_snapshot(
+      persistent=True,
+      data={
+          "zip": showifdef("users[0].address.zip"),
+          "reached_interview_end": True,
+      },
+  )
+  Parenting_Time_Agreement_2_download
+---
+comment: |
+  This question is used to introduce your interview. Please customize
+id: Parenting_Time_Agreement
+continue button field: Parenting_Time_Agreement_2_intro
+question: |
+  Parenting Time Agreement
+subquestion: |
+  Because children do best when both parents have a stable and meaningful involvement in their lives, the goal of this form is to help you design a plan that supports contact between each child and both parents. Parents are encouraged to share in the rights and responsibilities of raising their children after the parents have separated or divorced. This form is designed to be used for parents to develop their own parenting plan to submit to the Court for consideration.
+---
+id: Basic Information
+question: |
+  Basic Information
+fields:
+  - "Today's Date": _date
+    datatype: date
+  - "Who is the parent who proposed this Parenting time plan (if applicable)?": parent_proposed_plan
+    required: False
+---
+id: Legal and Physical Custody
+question: |
+  Legal and Physical Custody
+fields:
+  - "Name of the parent who has sole custody (makes major life decisions for child), if applicable.": parents_name_sole_custody
+    required: False
+  - "Explain any other legal custody arrangements (if applicable).": explain_other_legal_custody_arrangments
+    required: False
+  - "What is the name of the parent that the child will live with?": parent_child_lives_with
+  - "Describe the shared physical custody plan (if applicable).": shared_physical_custody_plan_describe
+    required: False
+  - "Describe any exceptions for physical custody arrangements (if applicable).": exceptions_describe_physical_custody_arrangements
+    required: False
+  - "What is the name of the parent who is subject to supervised visits (if applicable)?": name_of_parent_supervised_visits
+    required: False
+  - "Describe the center where supervised visitation will take place (if applicable).": supervised_visitation_center_describe
+    required: False
+  - "Describe other supervised parenting time arrangements (if applicable).": other_supervised_parenting_time_arrangments_describe
+    required: False
+---
+id: Holiday Parenting Plan
+question: |
+  Holiday Parenting Plan
+fields:
+  - "Describe the parenting time plan for the Child(ren)'s Birthday.": Children_Birthday_plan_describe
+  - "Describe the parenting time plan for Parent # 1's Birthday.": parents[0].birthday_plan_describe
+  - "Describe the parenting time plan for Parent #2's Birthday.": parents[1].birthday_plan_describe
+  - "Describe the parenting time plan for Labor Day.": Labor_Day_holiday_plan_describe
+  - "Describe the parenting time plan for Indigenious People's Day.": Indigenious_Peoples_Day_describe
+  - "Describe the parenting time plan for Thanksgiving.": Thanksgiving_plan_describe
+  - "Describe the parenting time plan for Christmas Eve.": Christmas_Eve_plan_describe
+  - "Describe the parenting time plan for Christmas Day.": Christmas_Day_plan_describe
+  - "List any additional dates with the children for the parent who has parenting time on Christmas Eve (if applicable).": additional_December_dates
+    required: False
+  - "The parent who has parenting time on Christmas Day, will have the following additional dates with the child during December Vacation (if applicable).": additional__December_dates
+    required: False
+  - "Describe any alternative arrangements for December Vacation (if applicable).": alternative_arrangements_December_describe
+    required: False
+  - "Describe the parenting time plan for Dr. Martin Luther King Day.": MLK_Day_holiday_plan_describe
+  - "Describe the parenting time plan for President's Day.": Presidents_Day_holiday_plan_describe
+  - "The following dates and times the chil(ren) will be with the other parent during February Vacation(if applicable).": exception_February_dates
+    required: False
+  - "Who will the child(ren) live with during February Vacation (if applicable).": parent_child_lives_with_Februrary_Vacation
+    required: False
+  - "Describe the parenting time plan for Mother's Day.": Mothers_Day_plan_describe
+  - "Describe the parenting time plan for Memorial Day.": Memorial_Day_holiday_plan_describe
+  - "Describe the parenting time plan for Father's Day.": Fathers_Day_plan_describe
+  - "Describe the parenting time plan for July 4th.": July4th__plan_describe
+  - "Describe the parenting time plan for other special occasions (if applicable).": other_occasions_plan_describe
+    required: False
+  - "Describe the child(ren)'s living arrangements for Summer Vacation.": children_summer_living_arrangements_describe
+  - "Describe the parenting time plan for any other vacations (if applicable).": _other_vacations_schedule_describe
+    required: False
+---
+id: School Residence Transportation Costs and Parent Responsibilities
+question: |
+  School Residence, Transportation Costs and Parent Responsibilities
+fields:
+  - "Describe any other parenting responsibilities (if applicable).": _other_parenting_responsibilities_describe
+    required: False
+  - "Describe the meeting place for the exchange of the child(ren).": _meeting_place_for_exchange_of_children
+  - "Describe any transportation arrangements (if applicable).": _transportation_arrangements_describe
+    required: False
+  - "Describe any agreements for shared transportation costs (if applicable)": _shared_transportation_costs_describe
+    required: False
+  - "The child(ren)’s legal residence for school attendance purposes will be the address of which parent?": parents_name_school_residence
+---
+id: preview Parenting_Time_Agreement_2
+question: |
+  Preview your form before you sign it
+subquestion: |
+  Here is a preview of the form you will sign on the next page.   
+  
+  ${ al_court_bundle.as_pdf(key='preview') }
+
+  Click the image to open it in a new tab. Click the "Edit answers" button
+  to edit your answers.
+
+  ${ action_button_html(url_action('review_Parenting_Time_Agreement_2'), label='Edit answers', color='info') }
+  
+  Remember to come back to this window to continue and sign your form.
+continue button field: Parenting_Time_Agreement_2_preview_question    
+---
+code: |
+  signature_fields = []
+---
+code: |
+  # This is a placeholder for the addresses that will be searched
+  # for matching address to court. Edit if court venue is based on 
+  # a different address than the user's
+  [user.address.address for user in users.complete_elements()]
+  addresses_to_search = [user.address for user in users.complete_elements()]
+---
+id: Parenting Time Agreement 2 review screen
+event: review_Parenting_Time_Agreement_2
+question: |
+  Review your answers
+review:
+  - Edit: children.revisit
+    button: |
+      **Children**
+
+      % for item in children:
+        * ${ item }
+      % endfor
+  - Edit: parents.revisit
+    button: |
+      **Parents**
+
+      % for item in parents:
+        * ${ item }
+      % endfor
+  - Edit: Christmas_Day_plan_describe
+    button: |
+      **Describe the parenting time plan for Christmas Day.**:
+      ${ Christmas_Day_plan_describe }
+  - Edit: Labor_Day_holiday_plan_describe
+    button: |
+      **Describe the parenting time plan for Labor Day.**:
+      ${ Labor_Day_holiday_plan_describe }
+  - Edit: shared_physical_custody_plan_describe
+    button: |
+      **Describe the shared physical custody plan (if applicable).**:
+      ${ shared_physical_custody_plan_describe }
+  - Edit: alternative_arrangements_December_describe
+    button: |
+      **Describe any alternative arrangements for December Vacation (if applicable).**:
+      ${ alternative_arrangements_December_describe }
+  - Edit: _other_parenting_responsibilities_describe
+    button: |
+      **Describe any other parenting responsibilities (if applicable).**:
+      ${ _other_parenting_responsibilities_describe }
+  - Edit: other_supervised_parenting_time_arrangments_describe
+    button: |
+      **Describe other supervised parenting time arrangements (if applicable).**:
+      ${ other_supervised_parenting_time_arrangments_describe }
+  - Edit: name_of_parent_supervised_visits
+    button: |
+      **What is the name of the parent who is subject to supervised visits (if applicable)?**:
+      ${ name_of_parent_supervised_visits }
+  - Edit: Thanksgiving_plan_describe
+    button: |
+      **Describe the parenting time plan for Thanksgiving.**:
+      ${ Thanksgiving_plan_describe }
+  - Edit: _shared_transportation_costs_describe
+    button: |
+      **Describe any agreements for shared transportation costs (if applicable)**:
+      ${ _shared_transportation_costs_describe }
+  - Edit: parent_child_lives_with_Februrary_Vacation
+    button: |
+      **Who will the child(ren) live with during February Vacation (if applicable).**:
+      ${ parent_child_lives_with_Februrary_Vacation }
+  - Edit: July4th__plan_describe
+    button: |
+      **Describe the parenting time plan for July 4th.**:
+      ${ July4th__plan_describe }
+  - Edit: parent_proposed_plan
+    button: |
+      **Who is the parent who proposed this Parenting time plan (if applicable)?**:
+      ${ parent_proposed_plan }
+  - Edit: _transportation_arrangements_describe
+    button: |
+      **Describe any transportation arrangements (if applicable).**:
+      ${ _transportation_arrangements_describe }
+  - Edit: additional_December_dates
+    button: |
+      **List any additional dates with the children for the parent who has parenting time on Christmas Eve (if applicable).**:
+      ${ additional_December_dates }
+  - Edit: Fathers_Day_plan_describe
+    button: |
+      **Describe the parenting time plan for Father's Day.**:
+      ${ Fathers_Day_plan_describe }
+  - Edit: Christmas_Eve_plan_describe
+    button: |
+      **Describe the parenting time plan for Christmas Eve.**:
+      ${ Christmas_Eve_plan_describe }
+  - Edit: exception_February_dates
+    button: |
+      **The following dates and times the chil(ren) will be with the other parent during February Vacation(if applicable).**:
+      ${ exception_February_dates }
+  - Edit: Children_Birthday_plan_describe
+    button: |
+      **Describe the parenting time plan for the Child(ren)'s Birthday.**:
+      ${ Children_Birthday_plan_describe }
+  - Edit: other_occasions_plan_describe
+    button: |
+      **Describe the parenting time plan for other special occasions (if applicable).**:
+      ${ other_occasions_plan_describe }
+  - Edit: MLK_Day_holiday_plan_describe
+    button: |
+      **Describe the parenting time plan for Dr. Martin Luther King Day.**:
+      ${ MLK_Day_holiday_plan_describe }
+  - Edit: _date
+    button: |
+      **Today's Date**:
+      ${ _date }
+  - Edit: additional__December_dates
+    button: |
+      **The parent who has parenting time on Christmas Day, will have the following additional dates with the child during December Vacation (if applicable).**:
+      ${ additional__December_dates }
+  - Edit: children_summer_living_arrangements_describe
+    button: |
+      **Describe the child(ren)'s living arrangements for Summer Vacation.**:
+      ${ children_summer_living_arrangements_describe }
+  - Edit: exceptions_describe_physical_custody_arrangements
+    button: |
+      **Describe any exceptions for physical custody arrangements (if applicable).**:
+      ${ exceptions_describe_physical_custody_arrangements }
+  - Edit: supervised_visitation_center_describe
+    button: |
+      **Describe the center where supervised visitation will take place (if applicable).**:
+      ${ supervised_visitation_center_describe }
+  - Edit: parents_name_school_residence
+    button: |
+      **The child(ren)’s legal residence for school attendance purposes will be the address of which parent?**:
+      ${ parents_name_school_residence }
+  - Edit: Memorial_Day_holiday_plan_describe
+    button: |
+      **Describe the parenting time plan for Memorial Day.**:
+      ${ Memorial_Day_holiday_plan_describe }
+  - Edit: Indigenious_Peoples_Day_describe
+    button: |
+      **Describe the parenting time plan for Indigenious People's Day.**:
+      ${ Indigenious_Peoples_Day_describe }
+  - Edit: parents_name_sole_custody
+    button: |
+      **Name of the parent who has sole custody (makes major life decisions for child), if applicable.**:
+      ${ parents_name_sole_custody }
+  - Edit: parent_child_lives_with
+    button: |
+      **What is the name of the parent that the child will live with?**:
+      ${ parent_child_lives_with }
+  - Edit: docket_number
+    button: |
+      **Docket number**:
+      ${ docket_number }
+  - Edit: trial_court
+    button: |
+      **Trial court**
+  
+      % if defined("trial_court.address.county"):
+      * address: ${ trial_court.address.block() }
+      % endif
+  - Edit: explain_other_legal_custody_arrangments
+    button: |
+      **Explain any other legal custody arrangements (if applicable).**:
+      ${ explain_other_legal_custody_arrangments }
+  - Edit: Mothers_Day_plan_describe
+    button: |
+      **Describe the parenting time plan for Mother's Day.**:
+      ${ Mothers_Day_plan_describe }
+  - Edit: Presidents_Day_holiday_plan_describe
+    button: |
+      **Describe the parenting time plan for President's Day.**:
+      ${ Presidents_Day_holiday_plan_describe }
+  - Edit: _meeting_place_for_exchange_of_children
+    button: |
+      **Describe the meeting place for the exchange of the child(ren).**:
+      ${ _meeting_place_for_exchange_of_children }
+  - Edit: _other_vacations_schedule_describe
+    button: |
+      **Describe the parenting time plan for any other vacations (if applicable).**:
+      ${ _other_vacations_schedule_describe }
+---
+continue button field: children.revisit
+question: |
+  Edit children
+subquestion: |
+  ${ children.table }
+
+  ${ children.add_action() }
+---
+table: children.table
+rows: children
+columns:
+  - Name: |
+      row_item.name.full() if defined("row_item.name.first") else ""
+  - Birthdate: |
+      row_item.birthdate if defined("row_item.birthdate") else ""
+edit:
+  - name.first
+  - birthdate
+confirm: True
+
+---
+continue button field: parents.revisit
+question: |
+  Edit parents
+subquestion: |
+  ${ parents.table }
+
+  ${ parents.add_action() }
+---
+table: parents.table
+rows: parents
+columns:
+  - Birthday plan describe: |
+      row_item.birthday_plan_describe if defined("row_item.birthday_plan_describe") else ""
+  - Name: |
+      row_item.name.full() if defined("row_item.name.first") else ""
+edit:
+  - birthday_plan_describe
+  - name.first
+confirm: True
+
+---
+id: download Parenting_Time_Agreement_2
+event: Parenting_Time_Agreement_2_download
+question: |
+  All done
+subquestion: |
+  Thank you ${users}. Your form is ready to download and deliver.
+  
+  View, download and send your form below. Click the "Edit answers" button to fix any mistakes.
+
+  ${ action_button_html(url_action('review_Parenting_Time_Agreement_2'), label='Edit answers', color='info') }
+  
+  
+  ${ al_user_bundle.download_list_html() }
+  
+
+  ${ al_user_bundle.send_button_html(show_editable_checkbox=True) }
+
+progress: 100
+---
+# ALDocument objects specify the metadata for each template
+objects:
+  - Parenting_Time_Agreement_2_Post_interview_instructions: ALDocument.using(title="Instructions", filename="Parenting_Time_Agreement_2_next_steps.docx", enabled=True, has_addendum=False)
+  - Parenting_Time_Agreement_2_attachment: ALDocument.using(title="Parenting Time Agreement", filename="Parenting_Time_Agreement_2", enabled=True, has_addendum=False, )
+---
+# Bundles group the ALDocuments into separate downloads, such as for court and for the user
+objects:
+  - al_user_bundle: ALDocumentBundle.using(elements=[Parenting_Time_Agreement_2_Post_interview_instructions, Parenting_Time_Agreement_2_attachment], filename="Parenting_Time_Agreement_2", title="All forms to download for your records", enabled=True)
+  - al_court_bundle: ALDocumentBundle.using(elements=[Parenting_Time_Agreement_2_attachment],  filename="Parenting_Time_Agreement_2", title="All forms to deliver to court", enabled=True)
+---
+# Each attachment defines a key in an ALDocument. We use `i` as the placeholder here so the same template is 
+# used for "preview" and "final" keys, and logic in the template checks the value of 
+# `i` to show or hide the user's signature
+attachment:
+  name: Post-interview-Instructions
+  filename: Parenting_Time_Agreement_2_next_steps
+  docx template file: Parenting_Time_Agreement_2_next_steps.docx
+  variable name: Parenting_Time_Agreement_2_Post_interview_instructions[i]
+  skip undefined: True
+---
+attachment:
+  name: Parenting Time Agreement 2
+  filename: Parenting_Time_Agreement_2
+  variable name: Parenting_Time_Agreement_2_attachment[i]
+  skip undefined: True
+  docx template file: Parenting_Time_Agreement_2.docx
+
+
